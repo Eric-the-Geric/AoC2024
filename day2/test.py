@@ -19,3 +19,4 @@ def is_safe(report):
 
 print(sum(is_safe(report) for report in reports))
 # p1 421 is correct and in my lua i get 431?? where are the extra 10 coming from...
+print(sum(is_safe(report) or any(is_safe(report[:i] + report[i + 1:]) for i in range(len(report))) for report in reports))
