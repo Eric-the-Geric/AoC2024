@@ -32,74 +32,7 @@ function Mul(x, y)
 	return x*y
 end
 
-function P2()
-	local cleaned_string = ""
-	local does = Find_occurences("do()", true)
-	local donts = Find_occurences("don't()", false)
-	local stop_index = donts[1]
-	local start_index = nil
-	local stop = false
-	local index = 1
-	for i=1, #S do
-		if i>= stop_index then
-			stop = true
-			index = index + 1
-			stop_index = donts[index]
-		end
-		if stop == true and i == start_index then
-			stop = false
-			for j=1,#does do
-				if does[j] > stop_index then
-					start_index = does[j]
-				end
-			end
-		end
-		print(start_index, stop_index)
-		if stop == false then
-			cleaned_string = cleaned_string..S:sub(i,i)
-		end
-	end
-	--local index = 1
-	--local stop = false
-	--for i=1,#S do
-	--	local cont_index = does[index]
-	--	local stop_index = 
-	--	cleaned_string = cleaned_string..S:sub(index, donts[i]-1)
-	--	if does[i] == nil then
-	--		break
-	--	end
-	--	for j=1,#does do
-	--		if does[j] > donts[i] then index = does[j]; break end
-	--	end
-
-	--end
-	--if donts[#donts] < does[#does] then
-	--	cleaned_string = cleaned_string..S:sub(does[#does], -1)
-	--end
-	--local mults = Extract_mults(cleaned_string)
-	--local sum = 0
-	--for i=1,#mults do
-	--	local f = mults[i]
-	--	local num_pairs = {}
-	--	for n in string.gmatch(f, "%d+") do
-	--		if #n < 4 then table.insert(num_pairs, tonumber(n)) end
-	--	end
-	--	if #num_pairs == 2 then
-	--		local n1, n2 = nil, nil
-	--		for _, n in ipairs(num_pairs) do
-	--			if _ == 1 then n1=n else n2=n end
-	--		end
-	--		sum =  sum + Mul(n1, n2)
-	--	end
-	--end
-	--print(sum)
-	--return sum
-end
---print(S:sub(60,63))
-P2()
-
-function P1()
-	local mults = Extract_mults(S)
+function Calc(mults)
 	local sum = 0
 	for i=1,#mults do
 		local f = mults[i]
@@ -118,7 +51,37 @@ function P1()
 	return sum
 end
 
+function P2()
+	local cleaned_string = ""
+	local does = Find_occurences("do()", true)
+	local donts = Find_occurences("don't()", false)
+	local index = 1
+	for i, donts_index in ipairs(donts) do
+		if i > #does then break end
+		cleaned_string = cleaned_string .. S:sub(index, donts_index)
+		for j=1,#does do
+			if does[j] > donts_index then index = does[j]; break end
+		end
+	end
+	if index < #S and does[#does] > donts[#donts] then
+		cleaned_string = cleaned_string .. S:sub(index, -1)
+	end
+	local mults = Extract_mults(cleaned_string)
+	local sum = Calc(mults)
+	return sum
+
+
+end
+function P1()
+	local mults = Extract_mults(S)
+	local sum = Calc(mults)
+	return sum
+end
+
 
 
 local sum1 = P1()
-print(sum1)
+print("p1", sum1)
+
+local sum2 = P2()
+print("p2", sum2)
