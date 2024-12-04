@@ -1,10 +1,10 @@
 -- regex should be something like this: mul\([0-9]{1,3},[0-9]{1,3}\)
-
+-- answer 70478672
 --s = 'xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))'
---File = './test.txt'
---io.input(File)
---S = io.read('*all')
-S = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+do()mul(32,64]don't()(mul(11,8)undo()?mul(8,5))"
+File = './test.txt'
+io.input(File)
+S = io.read('*all')
+--S = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
 
 function Find_occurences(p, d)
 	local occurences = {}
@@ -28,20 +28,32 @@ function Extract_mults(inputs)
 	return mults
 end
 
+function Mul(x, y)
+	return x*y
+end
+
 function P2()
 	local cleaned_string = ""
 	local does = Find_occurences("do()", true)
 	local donts = Find_occurences("don't()", false)
 	local index = 1
-	for i=1,#donts do
-		cleaned_string = cleaned_string..S:sub(index, donts[i]-1)
-		print(cleaned_string)
-		index = does[i]
-		print(index)
-		if index == nil then break end
-	end
-	print(cleaned_string)
 
+	for i=1,#donts do
+		print(donts[i], does[i])
+		local to = does[i]
+		local stop = donts[i]
+		cleaned_string = cleaned_string..S:sub(index, donts[i]-1)
+		if does[i] == nil then
+			break
+		end
+		for j=1,#does do
+			if does[j] > donts[i] then index = does[j]; break end
+		end
+
+	end
+	if donts[#donts] < does[#does] then
+		cleaned_string = cleaned_string..S:sub(does[#does], -1)
+	end
 	local mults = Extract_mults(cleaned_string)
 	local sum = 0
 	for i=1,#mults do
@@ -81,13 +93,10 @@ function P1()
 			sum =  sum + Mul(n1, n2)
 		end
 	end
-	print(sum)
 	return sum
 end
 
-function Mul(x, y)
-	return x*y
-end
+
 
 local sum1 = P1()
 print(sum1)
