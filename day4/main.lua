@@ -1,7 +1,6 @@
 File = "./example.txt"
 io.input(File)
 
-
 function Construct_board()
 	local board = {}
 	for line in io.lines() do
@@ -18,7 +17,7 @@ end
 function Get_words(row)
 	local words = {}
 	for i=1,#row do
-		if i+4 > #row then break end
+		if i+3 > #row then break end
 		local word = ""
 		local idx = i
 		while #word < 4 do
@@ -29,6 +28,7 @@ function Get_words(row)
 	end
 	return words
 end
+
 function Extract_diaganol(board, start_row, start_col)
 	local diag = {}
 	local r, c = start_row, start_col
@@ -72,21 +72,6 @@ function P1()
 		end
 	end
 
-	--local horizontal_reverse = {}
-	--for i=#board, 1, -1 do
-	--	local row = {}
-	--	for j=#board[i],1,-1 do
-	--		row[#row+1] = board[i][j]
-	--	end
-	--	horizontal_reverse[#horizontal_reverse+1] = row
-	--end
-	--for i, row in ipairs(horizontal_reverse) do
-	--	local words = Get_words(row)
-	--	for _, w in ipairs(words) do
-	--		all_words[#all_words+1] = w
-	--	end
-	--end
-
 	-- vertical
 	local vertical_forward = {}
 	for i=1,#board do
@@ -104,22 +89,6 @@ function P1()
 			all_words[#all_words+1] = w
 		end
 	end
-
-	--local vertical_reverse = {}
-	--for i=#board, 1, -1 do
-	--	local row = {}
-	--	for j=#board[i],1,-1 do
-	--		row[#row+1] = board[j][i]
-	--	end
-	--	vertical_reverse[#vertical_reverse+1] = row
-	--end
-
-	--for i, row in ipairs(vertical_reverse) do
-	--	local words = Get_words(row)
-	--	for _, w in ipairs(words) do
-	--		all_words[#all_words+1] = w
-	--	end
-	--end
 
 	-- diagonal
 	local diagonal_forward = {}
@@ -153,37 +122,42 @@ function P1()
 			all_words[#all_words+ 1] = w
 		end
 	end
-
-
-
-
-	--local diagonal_reverse = {}
-	--for i=#board,1,-1 do
-	--	local row = {}
-	--	for j=#board[i],1,-1 do
-	--		for k=#board,1+i,-1 do
-	--			for m=#board,1+j,-1 do
-	--				if k == m then
-	--					row[#row+1] = board[i-k][j-m]
-	--				end
-	--			end
-	--		end
-	--	end
-	--	diagonal_reverse[#diagonal_reverse+1] = row
-	--end
-
-	--for i, row in ipairs(diagonal_reverse) do
-	--	local words = Get_words(row)
-	--	for _, w in ipairs(words) do
-	--		all_words[#all_words+1] = w
-	--	end
-	--end
 	local sum = 0
 	for _, w in ipairs(all_words) do
 		if w == "XMAS" or w == "SAMX" then sum = sum +1 end
 	end
 	print(sum)
 end
+BOARD = Construct_board()
+function Traverse(x, y, num, match, dir)
+	for _, m in ipairs(match) do
+		for k, d in pairs(dir) do
+			print(d)
+		end
+	end
+end
 
+function P1_attempt2()
+	local match = {"M","A","S"}
+	local directions = {
+		NW={-1, -1}, --NW
+		N={-1, 0}, --N
+		NE={-1, 1}, --NE
+		E={0, 1}, --E
+		SE={1, 1},--SE
+		S={1, 0},--S
+		SW={1, -1},--SW
+		W={0, -1},--W
+	}
+	local count = 0
+	for i=1,#BOARD do
+		for j=1,#BOARD[i] do
+			if BOARD[i][j] == "X" then
+			--	count = count + 
+				Traverse(i, j, match, directions)
+			end
+		end
+	end
+end
 
-P1()
+P1_attempt2()
