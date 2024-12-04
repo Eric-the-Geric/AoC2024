@@ -4,7 +4,6 @@ io.input(File)
 function Construct_board()
 	local board = {}
 	for line in io.lines() do
-		print(line)
 		local row = {}
 		for i=1,#line do
 			row[#row+1] = line:sub(i,i)
@@ -130,31 +129,43 @@ function P1()
 end
 BOARD = Construct_board()
 function Traverse(x, y, num, match, dir)
-	for _, m in ipairs(match) do
-		for k, d in pairs(dir) do
-			print(d)
+	local count = 0
+	for _, d in ipairs(dir) do
+		local i = 1
+		while i <#match do
+			if x + d[1]*i < 1 or x + d[1]*i > #BOARD then break end
+			if y + d[2]*i < 1 or x + d[2]*i > #BOARD[1] then break end
+			local letter = BOARD[x+d[1]*i][y+d[2]*i]
+			if letter == nil then
+				break
+			elseif letter == match[i] then
+				i = i +1
+			else break
+			end
 		end
+		if i == 3 then count = count +1 end
 	end
+	return count
 end
 
 function P1_attempt2()
 	local match = {"M","A","S"}
 	local directions = {
-		NW={-1, -1}, --NW
-		N={-1, 0}, --N
-		NE={-1, 1}, --NE
-		E={0, 1}, --E
-		SE={1, 1},--SE
-		S={1, 0},--S
-		SW={1, -1},--SW
-		W={0, -1},--W
+		{-1, -1}, --NW
+		{-1, 0}, --N
+		{-1, 1}, --NE
+		{0, 1}, --E
+		{1, 1},--SE
+		{1, 0},--S
+		{1, -1},--SW
+		{0, -1},--W
 	}
 	local count = 0
 	for i=1,#BOARD do
 		for j=1,#BOARD[i] do
 			if BOARD[i][j] == "X" then
-			--	count = count + 
-				Traverse(i, j, match, directions)
+				count = count + Traverse(i, j, 0, match, directions)
+				print(count)
 			end
 		end
 	end
