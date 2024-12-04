@@ -1,4 +1,4 @@
-File = "./example.txt"
+File = "./test.txt"
 io.input(File)
 
 function Construct_board()
@@ -127,14 +127,16 @@ function P1()
 	end
 	print(sum)
 end
+
 BOARD = Construct_board()
+
 function Traverse(x, y, num, match, dir)
 	local count = 0
 	for _, d in ipairs(dir) do
 		local i = 1
-		while i <#match do
+		while i <=#match do
 			if x + d[1]*i < 1 or x + d[1]*i > #BOARD then break end
-			if y + d[2]*i < 1 or x + d[2]*i > #BOARD[1] then break end
+			if y + d[2]*i < 1 or y + d[2]*i > #BOARD[1] then break end
 			local letter = BOARD[x+d[1]*i][y+d[2]*i]
 			if letter == nil then
 				break
@@ -143,10 +145,11 @@ function Traverse(x, y, num, match, dir)
 			else break
 			end
 		end
-		if i == 3 then count = count +1 end
+		if i == num then count = count +1 end
 	end
 	return count
 end
+
 
 function P1_attempt2()
 	local match = {"M","A","S"}
@@ -164,11 +167,55 @@ function P1_attempt2()
 	for i=1,#BOARD do
 		for j=1,#BOARD[i] do
 			if BOARD[i][j] == "X" then
-				count = count + Traverse(i, j, 0, match, directions)
-				print(count)
+				count = count + Traverse(i, j, 4, match, directions)
 			end
 		end
 	end
+	print("p1 count =", count)
 end
 
-P1_attempt2()
+function Traversep2(x, y, match, dir)
+	local prev_letter = nil
+	for i, d in ipairs(dir) do
+			if x + d[1] < 1 or x + d[1] > #BOARD then break end
+			if y + d[2] < 1 or y + d[2] > #BOARD[1] then break end
+			local letter = BOARD[x+d[1]][y+d[2]]
+			if prev_letter == nil then
+				if letter == match[1] or letter == match[2] then
+					prev_letter = letter
+				else break
+				end
+			elseif prev_letter == "M" and letter == "S" then
+				return 1
+			elseif prev_letter == "S" and letter == "M" then
+				return 1
+			else return 0
+			end
+	end
+	return 0
+end
+
+function P2()
+	local match = {"M","S"}
+	local dir1 = {
+		{-1, 1}, --NE
+		{1, -1},--SW
+	}
+	local dir2 = {
+		{-1, -1}, --NW
+		{1, 1}--SE
+	}
+	local count = 0
+	for i=1,#BOARD do
+		for j=1,#BOARD[i] do
+			if BOARD[i][j] == "A" then
+				local count1 = Traversep2(i, j, match, dir1)
+				local count2 = Traversep2(i, j, match, dir2)
+				if count1 + count2 == 2 then count = count + 1 end
+			end
+		end
+	end
+	print("p1 count =", count)
+end
+--P1_attempt2()
+P2()
