@@ -1,4 +1,4 @@
-File = './example.txt'
+File = './input.txt'
 io.input(File)
 
 
@@ -32,12 +32,40 @@ function Read_input()
 	end
 	return prints, rules
 end
---[[
---create an index for each number in the print
---look at each role ofr that number in after. if the current number comes after that then it is incorrect?
---]]
 function P1()
 	local prints, rules = Read_input()
+	-- loop through the prints
+	local clean_prints = {}
+	for _, report in ipairs(prints) do
+		-- initial loop through each value in print
+		-- create a check to see if the print is valid
+		local check = true
+		for i, initial_v in ipairs(report) do
+			initial_v = tonumber(initial_v)
+			-- loop through ruleset and find a rule that has v in it
+			for _, rule in ipairs(rules) do
+				local before = rule[1]
+				local after = rule[2]
+				if initial_v == before then
+					for index, v in ipairs(report) do
+						v = tonumber(v)
+						if v == after then
+							if index < i then check = false break end
+						end
+					end
+				end
+			end
+		end
+		if check == true then clean_prints[#clean_prints+1] = report end
+		--break
+	end
+	local sum = 0
+	for _, rep in ipairs(clean_prints) do
+		print(table.concat(rep, ",", 1, #rep))
+		local middle_num = tonumber(rep[(#rep+1)/2])
+		sum = sum + middle_num
+	end
+	print(sum)
 end
 
 function P2()
