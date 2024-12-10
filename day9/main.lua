@@ -1,4 +1,4 @@
-File = "./example.txt"
+File = "./input.txt"
 io.input(File)
 function read_input()
 	return io.read("a")
@@ -109,6 +109,7 @@ function p2()
 			for i=1, right do
 				local free = calc_free(files[i])
 				local tot_space = #files[i]
+				local right_space = #files[right]
 				if free >= #files[right] and i ~= right then
 					--print(#files[i], #files[right])
 					if free == tot_space then
@@ -116,14 +117,14 @@ function p2()
 							files[i][j], files[right][j] = files[right][j], files[i][j]
 						end
 					else
-						for j=tot_space-free, tot_space do
-							files[i][j], files[right][j] = files[right][j], files[i][j]
+						for j=1, right_space do
+							files[i][tot_space - free + j], files[right][j] = files[right][j], files[i][tot_space - free + j]
 						end
 					end
 				end
 			end
 			right = right - 1
-			print(#files[left], #files[right])
+			--print(#files[left], #files[right])
 		end
 	end
 	local final_defrag = {}
@@ -132,7 +133,7 @@ function p2()
 			final_defrag[#final_defrag+1] = v
 		end
 	end
-	tbltos(final_defrag)
+	--tbltos(final_defrag)
 	local sum = 0
 	for i=0, #final_defrag-1 do
 		if final_defrag[i+1] ~= "." then
