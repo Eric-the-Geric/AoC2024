@@ -38,11 +38,11 @@ def p2():
         var = np.var(np.array(new_robot_coords))
         variances.append((i+1, var))
         robot_counts = robot_count
-        if i == 6474:
-            plt.imshow(robot_count)
-            plt.title(f"{i+1}")
-            plt.pause(10)
-            plt.cla()
+        #if i == 6474:
+        #    plt.imshow(robot_count)
+        #    plt.title(f"{i+1}")
+        #    plt.pause(10)
+        #    plt.cla()
         #else:
         #    plt.imshow(robot_count)
         #    plt.title(f"{i+1}")
