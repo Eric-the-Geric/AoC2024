@@ -66,17 +66,20 @@ function Agent:move2 ()
 		if next == "." then block = 'space';  break
 		elseif next == "#" then block ='wall'; break
 		elseif next == "[" then
-			if math.abs(self.dir[1]) == -1 then
-				stack[#stack+1] = {next_x+0, next_y+1}
+			if math.abs(self.dir[1]) == 1 then
+				print(self.map[next_x][next_y+1])
 				stack[#stack+1] = {next_x+self.dir[1], next_y+self.dir[2]}
+				stack[#stack+1] = {next_x+0, next_y+1}
+				stack[#stack+1] = {next_x +self.dir[1], next_y+1}
 			else
 				stack[#stack+1] = {next_x+self.dir[1], next_y+self.dir[2]}
 			end
 		elseif next == "]" then
-			if self.dir[1] == 0 and self.dir[2] == -1 then
-				stack[#stack+1] = {next_x+self.dir[1], next_y+self.dir[2]}
-			else
+			if math.abs(self.dir[1])== 1 then
 				stack[#stack+1] = {next_x+0, next_y-1}
+				stack[#stack+1] = {next_x+self.dir[1], next_y+self.dir[2]}
+				stack[#stack+1] = {next_x +self.dir[1], next_y-1}
+			else
 				stack[#stack+1] = {next_x+self.dir[1], next_y+self.dir[2]}
 			end
 		end
@@ -87,6 +90,7 @@ function Agent:move2 ()
 			local x2, y2 = stack[i-1][1], stack[i-1][2]
 			local this = self.map[x1][y1]
 			local next = self.map[x2][y2]
+			--print(this, next)
 			self.map[stack[i][1]][stack[i][2]], self.map[stack[i-1][1]][stack[i-1][2]] = self.map[stack[i-1][1]][stack[i-1][2]], self.map[stack[i][1]][stack[i][2]]
 		end
 		self.x, self.y = stack[2][1], stack[2][2]
@@ -195,6 +199,7 @@ function p2 ( )
 		agent:get_dir(dir)
 		agent:move2()
 		agent:PrintMap()
+	--break
 	end
 	agent:p1()
 end
